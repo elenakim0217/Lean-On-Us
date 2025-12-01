@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infinite Random Motion with Titles</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@700&display=swap" rel="stylesheet">
+
+    <style>
+        /* 기본 설정 */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'IBM Plex Sans KR', sans-serif; /* 기본 폰트 설정 */
+            overflow-x: hidden;
+            background-image: url('./original.jpg');
+            background-repeat: repeat;
+            background-size: cover;
+            background-attachment: fixed;
+            background-color: #111;
+        }
+
+        /* --- 아이콘 및 헤더 스타일 --- */
+        .common-icon {
+            width: 60px;
+            height: auto;
+            object-fit: contain;
+            z-index: 1000;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .side-left {
+            position: fixed;
+            top: 50%;
+            left: 30px;
+            transform: translateY(-50%);
+        }
+
+        .side-right {
+            position: fixed;
+            top: 50%;
+            right: 30px;
+            transform: translateY(-50%);
+        }
+
+        /* --- 그리드 레이아웃 --- */
+        #grid-container {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+            padding: 100px 100px;
+        }
+
+        /* --- 아이템 박스 --- */
+        .motion-item {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            cursor: grab;
+            background-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .motion-item:active {
+            cursor: grabbing;
+        }
+
+        /* --- 프레임 이미지 --- */
+        .frame-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: none;
+            pointer-events: none;
+            -webkit-user-drag: none;
+            user-drag: none;
+        }
+
+        .frame-img.active {
+            display: block;
+        }
+
+        /* --- [추가] 호버 텍스트 스타일 --- */
+        .hover-title {
+            position: absolute;
+            /* 이미지 위쪽 배치 (취향에 따라 top 값을 조절하세요. -20% 등) */
+            top: 10%; 
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            text-align: center;
+            
+            /* 폰트 및 색상 설정 */
+            font-family: 'IBM Plex Sans KR', sans-serif;
+            font-weight: 700; /* Bold */
+            font-size: 14px;  /* 글씨 크기 조절 */
+            color: #ed7625;   /* 요청하신 오렌지색 */
+            
+            /* 애니메이션 설정 */
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none; /* 텍스트가 마우스 드래그를 방해하지 않도록 통과시킴 */
+            z-index: 10; /* 이미지보다 위에 뜨도록 */
+            text-shadow: 0px 0px 5px rgba(255, 255, 255, 0.5); /* 가독성을 위한 은은한 흰색 그림자 (선택사항) */
+        }
+
+        /* 자바스크립트로 붙였다 뗄 클래스 */
+        .hover-title.visible {
+            opacity: 1;
+        }
+
+        /* 모바일 대응 */
+        @media (max-width: 768px) {
+            #grid-container {
+                grid-template-columns: repeat(3, 1fr);
+                padding: 90px 20px;
+            }
+            .side-left, .side-right {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="./xy3.png" class="common-icon" alt="Header Icon">
+    </header>
+
+    <img src="./xy1.png" class="common-icon side-left" alt="Left Icon">
+    <img src="./xy2.png" class="common-icon side-right" alt="Right Icon">
+
+    <footer>
+        <img src="./xy4.png" class="common-icon" alt="Footer Icon">
+    </footer>
+
+    <audio id="bgMusic" src="./sound.mp3" autoplay loop></audio>
+
+    <div id="grid-container"></div>
+
+    <script>
+        document.addEventListener('click', function() {
+            const audio = document.getElementById('bgMusic');
+            if (audio.paused) audio.play();
+        }, { once: true });
+
+        // ==========================================
+        // 1. 이미지 데이터 (프레임 수)
+        // ==========================================
+        const dataList = [
+            { id: 1, count: 12 }, { id: 2, count: 14 }, { id: 3, count: 11 }, { id: 4, count: 8 },
+            { id: 5, count: 13 }, { id: 6, count: 12 }, { id: 7, count: 13 }, { id: 8, count: 11 },
+            { id: 9, count: 8 }, { id: 10, count: 13 }, { id: 11, count: 8 }, { id: 12, count: 10 },
+            { id: 13, count: 12 }, { id: 14, count: 12 }, { id: 15, count: 12 }, { id: 16, count: 12 },
+            { id: 17, count: 11 }, { id: 18, count: 10 }, { id: 19, count: 10 }, { id: 20, count: 10 },
+            { id: 21, count: 13 }, { id: 22, count: 10 }, { id: 23, count: 10 }, { id: 24, count: 12 },
+            { id: 25, count: 10 }, { id: 26, count: 10 }, { id: 27, count: 10 }, { id: 28, count: 10 },
+            { id: 29, count: 9 }, { id: 30, count: 9 }, { id: 31, count: 10 }, { id: 32, count: 10 },
+            { id: 33, count: 9 }, { id: 34, count: 11 }, { id: 35, count: 10 }, { id: 36, count: 9 },
+            { id: 37, count: 10 }, { id: 38, count: 10 }, { id: 39, count: 8 }, { id: 40, count: 10 },
+            { id: 41, count: 12 }, { id: 42, count: 9 }, { id: 43, count: 6 }, { id: 44, count: 9 },
+            { id: 45, count: 11 }, { id: 46, count: 9 }, { id: 47, count: 9 }, { id: 48, count: 10 },
+            { id: 49, count: 9 }, { id: 50, count: 11 }, { id: 51, count: 9 }, { id: 52, count: 12 },
+            { id: 53, count: 12 }, { id: 54, count: 11 }, { id: 55, count: 13 }, { id: 56, count: 10 },
+            { id: 57, count: 9 }
+        ];
+
+        // ==========================================
+        // 2. 텍스트 매핑 데이터
+        // ==========================================
+        const titleMap = {
+            1: "편안한 빈백", 2: "자유로운 너와 나", 3: "고요한 평화", 4: "밝은 무제",
+            5: "따뜻한 여정", 6: "안정적인 그 자리", 7: "든든한 의지", 8: "온전한 무해",
+            9: "적당한 편안", 10: "폭신한 나", 11: "가벼운 몽몽이", 12: "익숙한 뭘까요",
+            13: "무거운 꼬키리", 14: "어두운 잘생긴 남자 상자", 15: "고요한 휘청휘청", 16: "아늑한 √",
+            17: "부드러운 꿈의 요람", 18: "듬직한 튼실이", 19: "말랑한 베개", 20: "든든한 베개 의자",
+            21: "강한 사람", 22: "평화로운 BEAN", 23: "안전한 토닥", 24: "아름다운 작은 방",
+            25: "고마운 기댐과 자람", 26: "부드러운 완전 편해... <br> 완전 맘에 들어...", 27: "고요한 바나나", 28: "바스락거리는 오후의 햇빛",
+            29: "부드러운 위로와 휴식", 30: "포근한 달덩이", 31: "단단한 용기", 32: "몽글몽글한 기요미",
+            33: "둥그런 평온", 34: "편안한 양털 쿠션", 35: "영원한 기댐의 공간", 36: "은은한 녹색코튼 캔디",
+            37: "단단한 방문", 38: "따뜻한 사람 인", 39: "폭신한 연결고리", 40: "부드러운 위로 쿠션",
+            41: "편안한 음과 양", 42: "포근한 하트", 43: "보들보들한 뭉치기", 44: "푹신한 구름 소파",
+            45: "따뜻한 편안", 46: "평화로운 기댐", 47: "몽글몽글한 구름의자", 48: "부드러운 애착인형",
+            49: "포근한 온기", 50: "은은한 퐁", 51: "조화로운 무제", 52: "곡선적인 니케",
+            53: "단단한 무제", 54: "단단한 뿌리 바이러스", 55: "무제", 56: "고요한 포응 의자",
+            57: "두터운 보듬이"
+        };
+
+        // ==========================================
+        // 3. 스탑모션 & 호버 이벤트 클래스
+        // ==========================================
+        class StopMotionPlayer {
+            constructor(container, id, totalFrames) {
+                this.container = container;
+                this.id = id;
+                this.totalFrames = totalFrames;
+                this.frames = container.querySelectorAll('.frame-img');
+                
+                // 호버 텍스트 엘리먼트
+                this.titleEl = container.querySelector('.hover-title');
+                this.hoverTimeout = null;
+                
+                // 모션 관련 변수
+                this.currentIndex = 0;
+                this.isDragging = false;
+                this.isStopping = false;
+                this.isPaused = false;
+                this.lastMouseX = 0;
+                this.velocity = 0;
+                this.frameTimer = 0;
+                this.stopStartTime = 0;
+                this.initialStopVelocity = 0;
+                this.pauseStartTime = 0;
+                this.rafId = null;
+                this.lastTime = 0;
+
+                this.initEvents();
+                this.initHoverEffect(); // 호버 기능 초기화
+            }
+
+            // 호버 시 3초간 텍스트 보이기
+            initHoverEffect() {
+                this.container.addEventListener('mouseenter', () => {
+                    // 드래그 중이 아닐 때만 텍스트 표시 (선택사항)
+                    if (this.titleEl) {
+                        this.titleEl.classList.add('visible');
+
+                        // 기존 타이머가 있다면 취소 (깜빡임 방지)
+                        if (this.hoverTimeout) {
+                            clearTimeout(this.hoverTimeout);
+                        }
+
+                        // 3초 뒤에 사라지게 함
+                        this.hoverTimeout = setTimeout(() => {
+                            this.titleEl.classList.remove('visible');
+                        }, 3000);
+                    }
+                });
+
+                // 마우스가 나가면 즉시 사라지게 할 것인지, 아니면 3초를 유지할 것인지 결정.
+                // 요청은 "3초 떴다가 사라졌으면 좋겠어"이므로 mouseleave 처리는 굳이 안 해도 됨.
+                // 만약 마우스 나가면 바로 끄고 싶으면 아래 주석 해제.
+                /*
+                this.container.addEventListener('mouseleave', () => {
+                    if (this.hoverTimeout) clearTimeout(this.hoverTimeout);
+                    this.titleEl.classList.remove('visible');
+                });
+                */
+            }
+
+            initEvents() {
+                this.container.addEventListener('mousedown', (e) => {
+                    e.preventDefault();
+                    if (e.button !== 0) return;
+                    this.lastMouseX = e.clientX;
+
+                    if (this.isStopping) {
+                        this.isPaused = true;
+                        this.pauseStartTime = performance.now();
+                    } else {
+                        this.isDragging = true;
+                        this.isStopping = false;
+                        this.isPaused = false;
+                        this.velocity = 0;
+                        this.startLoop();
+                    }
+                });
+
+                window.addEventListener('mousemove', (e) => {
+                    if (this.isPaused) {
+                        if (Math.abs(e.clientX - this.lastMouseX) > 5) {
+                            this.isPaused = false;
+                            this.isStopping = false;
+                            this.isDragging = true;
+                        } else return;
+                    }
+                    if (!this.isDragging) return;
+                    e.preventDefault();
+                    const currentX = e.clientX;
+                    const deltaX = currentX - this.lastMouseX;
+                    this.velocity = (deltaX > 0) ? Math.min(deltaX * 2, 60) : 0;
+                    this.lastMouseX = currentX;
+                });
+
+                window.addEventListener('mouseup', () => {
+                    if (this.isDragging) {
+                        this.isDragging = false;
+                        this.startStoppingSequence();
+                    } else if (this.isPaused) {
+                        this.isPaused = false;
+                        this.stopStartTime += (performance.now() - this.pauseStartTime);
+                    }
+                });
+            }
+
+            startLoop() {
+                if (!this.rafId) {
+                    this.lastTime = 0;
+                    this.rafId = requestAnimationFrame(this.animate.bind(this));
+                }
+            }
+
+            startStoppingSequence() {
+                this.isStopping = true;
+                this.stopStartTime = performance.now();
+                this.initialStopVelocity = this.velocity > 5 ? this.velocity : 10;
+            }
+
+            animate(timestamp) {
+                if (!this.lastTime) this.lastTime = timestamp;
+                const deltaTime = timestamp - this.lastTime;
+                this.lastTime = timestamp;
+
+                if (this.isPaused) {
+                    this.rafId = requestAnimationFrame(this.animate.bind(this));
+                    return;
+                }
+
+                if (this.isDragging || this.isStopping) {
+                    if (this.isStopping) {
+                        const timeElapsed = timestamp - this.stopStartTime;
+                        if (timeElapsed >= 3000) {
+                            this.resetToDefault();
+                            return;
+                        }
+                        const progress = timeElapsed / 3000;
+                        this.velocity = this.initialStopVelocity * (1 - progress);
+                    }
+
+                    if (this.velocity > 0.1) {
+                        this.frameTimer += deltaTime * this.velocity * 0.005;
+                        if (this.frameTimer >= 1) {
+                            const framesToAdvance = Math.floor(this.frameTimer);
+                            this.frameTimer -= framesToAdvance;
+                            this.nextFrame(framesToAdvance);
+                        }
+                    }
+                    this.rafId = requestAnimationFrame(this.animate.bind(this));
+                } else {
+                    this.rafId = null;
+                }
+            }
+
+            nextFrame(count) {
+                this.frames[this.currentIndex].classList.remove('active');
+                this.currentIndex = (this.currentIndex + count) % this.totalFrames;
+                this.frames[this.currentIndex].classList.add('active');
+            }
+
+            resetToDefault() {
+                this.isDragging = false;
+                this.isStopping = false;
+                this.isPaused = false;
+                this.velocity = 0;
+                this.lastTime = 0;
+                this.rafId = null;
+                this.frames[this.currentIndex].classList.remove('active');
+                this.currentIndex = 0;
+                this.frames[0].classList.add('active');
+            }
+        }
+
+        // ==========================================
+        // 렌더링 로직
+        // ==========================================
+        const gridContainer = document.getElementById('grid-container');
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function renderBatch(items) {
+            const fragment = document.createDocumentFragment();
+            items.forEach(item => {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'motion-item';
+                wrapper.setAttribute('ondragstart', 'return false'); 
+                
+                // 1. 텍스트 삽입 (매핑된 텍스트가 없으면 '무제' 처리)
+                const titleText = titleMap[item.id] || "무제";
+                let imagesHTML = `<div class="hover-title">${titleText}</div>`;
+                
+                // 2. 이미지 삽입
+                for (let i = 1; i <= item.count; i++) {
+                    const isActive = (i === 1) ? 'active' : '';
+                    imagesHTML += `<img src="./${item.id}_${i}.png" class="frame-img ${isActive}" draggable="false" loading="lazy">`;
+                }
+
+                wrapper.innerHTML = imagesHTML;
+                fragment.appendChild(wrapper);
+
+                requestAnimationFrame(() => {
+                    new StopMotionPlayer(wrapper, item.id, item.count);
+                });
+            });
+            gridContainer.appendChild(fragment);
+        }
+
+        const shuffledData = shuffleArray([...dataList]);
+        renderBatch(shuffledData);
+
+        let isAdding = false;
+        window.addEventListener('scroll', () => {
+            if (isAdding) return;
+            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 200) {
+                isAdding = true;
+                renderBatch(shuffledData);
+                setTimeout(() => { isAdding = false; }, 500);
+            }
+        });
+    </script>
+</body>
+</html>
