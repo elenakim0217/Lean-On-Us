@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>기대도 됩니다!</title>
+    <title>Infinite Random Motion</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -41,10 +41,8 @@
             justify-content: center;
             align-items: center;
             z-index: 2000;
-            /* 배경이 없으면 아이콘 뒤로 내용이 비칠 수 있음. 필요시 rgba 설정 */
         }
         
-        /* 4. 푸터 여백 수정 (헤더와 동일하게 80px 공간 확보) */
         header { top: 0; height: 80px; }
         footer { bottom: 0; height: 80px; } 
 
@@ -62,9 +60,34 @@
             z-index: 2000;
         }
 
-        /* --- 3. XY 호버 텍스트 (툴팁) 스타일 수정 --- */
+        /* --- [수정] 헤더 이미지 래퍼 (두 이미지 겹치기) --- */
+        .header-img-wrapper {
+            position: relative;
+            width: 60px;  /* 아이콘 크기 */
+            height: 60px; /* 아이콘 크기 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 헤더 안의 이미지들은 래퍼 안에 절대 위치로 겹침 */
+        .header-icon {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            object-fit: contain;
+            transition: opacity 0.5s ease; /* 부드러운 전환 */
+            cursor: pointer;
+        }
+
+        /* 활성화/비활성화 클래스 */
+        .header-icon.active { opacity: 1; z-index: 20; pointer-events: auto; }
+        .header-icon.inactive { opacity: 0; z-index: 10; pointer-events: none; }
+
+
+        /* --- XY 호버 텍스트 (툴팁) --- */
         .xy-tooltip {
-            position: fixed; /* 화면 기준 고정 */
+            position: fixed;
             color: #ed7625;
             font-family: 'IBM Plex Sans KR', sans-serif;
             font-weight: 700;
@@ -72,39 +95,35 @@
             opacity: 0;
             transition: opacity 0.3s ease;
             pointer-events: none;
-            z-index: 3000; /* 팝업보다 무조건 위에 뜨도록 매우 높게 설정 */
+            z-index: 3000;
             white-space: nowrap;
-            text-shadow: 0 0 5px rgba(255,255,255,0.8); /* 가독성 확보 */
+            text-shadow: 0 0 5px rgba(255,255,255,0.8);
         }
-        .xy-tooltip.visible {
-            opacity: 1;
-        }
+        .xy-tooltip.visible { opacity: 1; }
 
-        /* 툴팁 위치 미세 조정 (아이콘 위치에 맞춤) */
-        #tooltip-xy1 { top: 50%; left: 100px; transform: translateY(-50%); } /* xy1 오른쪽 */
-        #tooltip-xy2 { top: 50%; right: 100px; transform: translateY(-50%); } /* xy2 왼쪽 */
-        #tooltip-xy3 { top: 90px; left: 50%; transform: translateX(-50%); } /* xy3 아래쪽 */
-        #tooltip-xy4 { bottom: 90px; left: 50%; transform: translateX(-50%); } /* xy4 위쪽 (푸터 높이 고려) */
+        #tooltip-xy1 { top: 50%; left: 100px; transform: translateY(-50%); }
+        #tooltip-xy2 { top: 50%; right: 100px; transform: translateY(-50%); }
+        #tooltip-xy3 { top: 90px; left: 50%; transform: translateX(-50%); }
+        #tooltip-xy4 { bottom: 90px; left: 50%; transform: translateX(-50%); }
 
-
-        /* --- 2. Title 팝업 스타일 --- */
+        /* --- Title 팝업 스타일 --- */
         .title-popup {
             position: fixed;
-            top: 90px; /* 헤더 바로 아래 */
+            top: 90px;
             left: 50%;
-            transform: translateX(40px); /* 아이콘 오른쪽 쯤 */
-            width: 350px; /* 너비 확보 */
-            background-color: rgba(255, 255, 255, 0.95); /* 가독성 위해 거의 불투명 */
+            transform: translateX(40px);
+            width: 350px;
+            background-color: rgba(255, 255, 255, 0.95);
             color: #ed7625;
             padding: 20px;
             border-radius: 10px;
             font-size: 13px;
             line-height: 1.6;
             display: none; 
-            z-index: 2500; /* 매우 높음 */
+            z-index: 2500;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             text-align: left;
-            word-break: keep-all; /* 단어 단위 줄바꿈 */
+            word-break: keep-all;
         }
         .title-popup b { font-size: 15px; }
 
@@ -113,7 +132,7 @@
             display: grid;
             grid-template-columns: repeat(5, 1fr);
             gap: 15px;
-            padding: 100px 100px; /* 헤더/푸터 가림 방지 */
+            padding: 100px 100px;
         }
 
         /* --- 아이템 박스 --- */
@@ -121,11 +140,10 @@
             position: relative;
             width: 100%;
             aspect-ratio: 1 / 1;
-            cursor: pointer; /* 더블클릭 가능함을 암시 */
+            cursor: pointer;
             user-select: none;
             -webkit-user-select: none;
         }
-        /* 드래그 중일 때 커서 */
         .motion-item.dragging { cursor: grabbing; }
 
         .frame-img {
@@ -138,32 +156,23 @@
         }
         .frame-img.active { display: block; }
 
-        /* --- 1 & 5. 아이템 팝업 스타일 --- */
+        /* --- 아이템 팝업 스타일 --- */
         .popup-box {
             position: absolute;
             top: 0;
             left: 100%;
             margin-left: 10px;
-            width: 240px; /* 텍스트 공간 확보 */
+            width: 240px;
             padding: 20px;
             border-radius: 8px;
-            
-            /* 6. 호버가 아닌 클래스 제어로 변경 */
             display: none; 
-            
             z-index: 1500;
-            pointer-events: none; /* 팝업 텍스트 드래그 방지, 클릭 통과 */
+            pointer-events: none;
             text-align: left;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
+        .popup-box.show { display: block; pointer-events: auto; }
 
-        /* 팝업 열렸을 때 */
-        .popup-box.show {
-            display: block;
-            pointer-events: auto; /* 열리면 내용 복사/클릭 가능하게 */
-        }
-
-        /* 4, 5열 왼쪽 배치 */
         .motion-item:nth-child(5n) .popup-box,
         .motion-item:nth-child(5n-1) .popup-box {
             left: auto;
@@ -172,59 +181,45 @@
             margin-right: 10px;
         }
 
-        /* 5. 텍스트 스타일 통일 */
         .popup-text {
             color: #ed7625;
             font-family: 'IBM Plex Sans KR', sans-serif;
             font-weight: 700;
         }
 
-        /* 1,2번째 텍스트 (1행) */
         .text-header {
             display: flex;
             flex-direction: row;
             gap: 10px;
             align-items: baseline;
             margin-bottom: 10px;
-            font-size: 14px; /* 크기 통일 */
+            font-size: 14px;
             text-align: left;
         }
 
-        /* 3번째 텍스트 (설명) */
         .text-desc {
-            font-size: 14px; /* 크기 통일 */
+            font-size: 14px;
             line-height: 1.5;
-            text-align: left; /* 왼쪽 정렬 */
+            text-align: left;
             white-space: pre-wrap;
         }
 
-        /* 모바일 대응 */
         @media (max-width: 768px) {
-            #grid-container {
-                grid-template-columns: repeat(2, 1fr);
-                padding: 90px 20px;
-            }
+            #grid-container { grid-template-columns: repeat(2, 1fr); padding: 90px 20px; }
             .side-left, .side-right { display: none; }
-            .title-popup {
-                width: 80%;
-                left: 10%;
-                transform: none;
-            }
-            .popup-box {
-                /* 모바일은 화면 중앙에 띄움 */
-                position: fixed;
-                top: 50%; left: 50%;
-                transform: translate(-50%, -50%);
-                width: 80%;
-                margin: 0;
-            }
+            .title-popup { width: 80%; left: 10%; transform: none; }
+            .popup-box { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80%; margin: 0; }
         }
     </style>
 </head>
 <body>
 
     <header>
-        <img src="./xy3.png" id="headerImg" class="common-icon" alt="Header">
+        <div class="header-img-wrapper">
+            <img src="./xy3.png" id="img-xy3" class="header-icon active" alt="xy3">
+            <img src="./title.png" id="img-title" class="header-icon inactive" alt="title">
+        </div>
+        
         <div id="tooltip-xy3" class="xy-tooltip">동적</div>
         
         <div id="titlePopup" class="title-popup">
@@ -248,15 +243,12 @@
     <div id="grid-container"></div>
 
     <script>
-        // 오디오 자동재생
         document.addEventListener('click', function() {
             const audio = document.getElementById('bgMusic');
             if (audio.paused) audio.play();
         }, { once: true });
 
-        // 전역 클릭 이벤트 (팝업 닫기용)
         window.addEventListener('click', (e) => {
-            // 클릭된 요소가 motion-item 내부가 아니라면 모든 팝업 닫기
             if (!e.target.closest('.motion-item')) {
                 document.querySelectorAll('.popup-box.show').forEach(el => {
                     el.classList.remove('show');
@@ -264,7 +256,6 @@
             }
         });
 
-        // 1. 투명도 90% 함수 수정
         function hexToRgba(hex, alpha) {
             if(!hex) return `rgba(255, 255, 255, ${alpha})`;
             if(hex === '백색' || hex.toLowerCase() === '#ffffff' || hex.toLowerCase() === 'ffffff') 
@@ -280,7 +271,6 @@
             return `rgba(255, 255, 255, ${alpha})`;
         }
 
-        // 데이터 (57개)
         const rawData = [
             {id:1, t1:"편안한 빈백", t2:"이삭", col:"c7e0c8", desc:"힘들 때 의지할 수 있는 것이 필요하다. 편안하고 부드럽고 믿을 수 있고 좋은 것. 힘들면 언제든 기댈 수 있는 편안한, 부들부들, 모난 곳 없는, 둥글둥글 빈백."},
             {id:2, t1:"자유로운 너와 나", t2:"포근", col:"7292d3", desc:"나를 위해 내게 기대어줘.' 기울어지고 넘어지는 대상. 기댈 수 있게 손을 뻗은 대상. 기댈 수 있게 내어 주는 사람 역시 자유롭고 위로받는... 색상이 밝아지며, 짙은 남색에서 흰색이 되어가는... 깊이 늘어져 있던 마음이 풀어져 자유롭고 깨끗하게 되는 것. '기대다'는 힘든 일이 있을 때 마음을 편안하고 평화롭게 만들어 준다. 난, 기댈 대상이 필요하다."},
@@ -356,9 +346,6 @@
         }));
 
 
-        // ==========================================
-        // 스탑모션 플레이어 클래스
-        // ==========================================
         class StopMotionPlayer {
             constructor(container, id, totalFrames) {
                 this.container = container;
@@ -366,7 +353,6 @@
                 this.totalFrames = totalFrames;
                 this.frames = container.querySelectorAll('.frame-img');
                 
-                // 팝업 요소
                 this.popupBox = container.querySelector('.popup-box');
 
                 this.currentIndex = 0;
@@ -386,17 +372,12 @@
                 this.initPopupTrigger();
             }
             
-            // 6. 더블클릭 트리거
             initPopupTrigger() {
                 this.container.addEventListener('dblclick', (e) => {
-                    e.stopPropagation(); // 상위 이벤트 전파 중단
-                    
-                    // 다른 열린 팝업 닫기 (선택사항)
+                    e.stopPropagation();
                     document.querySelectorAll('.popup-box.show').forEach(el => {
                         if (el !== this.popupBox) el.classList.remove('show');
                     });
-                    
-                    // 현재 팝업 토글
                     this.popupBox.classList.toggle('show');
                 });
             }
@@ -513,9 +494,6 @@
             }
         }
 
-        // ==========================================
-        // 렌더링 로직
-        // ==========================================
         const gridContainer = document.getElementById('grid-container');
 
         function shuffleArray(array) {
@@ -533,10 +511,8 @@
                 wrapper.className = 'motion-item';
                 wrapper.setAttribute('ondragstart', 'return false'); 
                 
-                // 1. 투명도 90% (0.9)
                 const bgStyle = `background-color: ${hexToRgba(item.col, 0.9)};`;
 
-                // 팝업 HTML (5. 텍스트 크기 통일, 3번째 왼쪽 정렬)
                 const popupHTML = `
                     <div class="popup-box" style="${bgStyle}">
                         <div class="popup-text">
@@ -580,11 +556,6 @@
             }
         });
 
-        // ==========================================
-        // 인터랙션: XY 호버 & 헤더 토글
-        // ==========================================
-        
-        // 3. XY 호버 텍스트 (위치/Z-index 수정됨)
         function setupTooltip(imgId, tooltipId) {
             const img = document.getElementById(imgId);
             const tip = document.getElementById(tooltipId);
@@ -598,36 +569,39 @@
                 }, 3000);
             });
             img.addEventListener('mouseleave', () => {
-                // 필요 시 추가 로직
             });
         }
         setupTooltip('xy1', 'tooltip-xy1');
         setupTooltip('xy2', 'tooltip-xy2');
-        setupTooltip('xy3', 'tooltip-xy3');
+        setupTooltip('img-xy3', 'tooltip-xy3'); 
         setupTooltip('xy4', 'tooltip-xy4');
 
-        // 2. 헤더 토글 (5초 간격)
         const headerImg = document.getElementById('headerImg');
+        const imgXy3 = document.getElementById('img-xy3');
+        const imgTitle = document.getElementById('img-title');
         const titlePopup = document.getElementById('titlePopup');
         let isTitle = false;
 
         setInterval(() => {
             isTitle = !isTitle;
             if (isTitle) {
-                headerImg.src = './title.png';
+                imgXy3.classList.remove('active');
+                imgXy3.classList.add('inactive');
+                imgTitle.classList.remove('inactive');
+                imgTitle.classList.add('active');
             } else {
-                headerImg.src = './xy3.png';
+                imgTitle.classList.remove('active');
+                imgTitle.classList.add('inactive');
+                imgXy3.classList.remove('inactive');
+                imgXy3.classList.add('active');
                 titlePopup.style.display = 'none';
             }
-        }, 5000); // 5000ms = 5초
+        }, 5000);
 
-        // 2. title.png 호버 팝업 (텍스트 내용 반영됨)
-        headerImg.addEventListener('mouseenter', () => {
-            if (isTitle) { 
-                titlePopup.style.display = 'block';
-            }
+        imgTitle.addEventListener('mouseenter', () => {
+            if (isTitle) titlePopup.style.display = 'block';
         });
-        headerImg.addEventListener('mouseleave', () => {
+        imgTitle.addEventListener('mouseleave', () => {
             titlePopup.style.display = 'none';
         });
         titlePopup.addEventListener('mouseenter', () => titlePopup.style.display = 'block');
