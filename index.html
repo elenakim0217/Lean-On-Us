@@ -23,6 +23,13 @@
             background-color: #111;
         }
 
+        /* --- XY 아이콘 점멸 애니메이션 --- */
+        @keyframes blinkEffect {
+            0% { opacity: 0.3; }
+            50% { opacity: 1; }
+            100% { opacity: 0.3; }
+        }
+
         /* --- 공통 아이콘 스타일 --- */
         .common-icon {
             width: 60px;
@@ -30,6 +37,7 @@
             object-fit: contain;
             z-index: 2000;
             cursor: pointer;
+            animation: blinkEffect 10s infinite ease-in-out;
         }
 
         /* --- 헤더/푸터/사이드 레이아웃 --- */
@@ -43,14 +51,63 @@
             z-index: 2000;
         }
         
-        header { top: 0; height: 80px; }
+        header { top: 0; height: 120px; pointer-events: none; } 
         footer { bottom: 0; height: 80px; } 
+
+        /* 타이틀 이미지 */
+        .title-btn {
+            position: fixed;
+            top: 20px;
+            width: 120px;
+            height: auto;
+            cursor: pointer;
+            z-index: 2100;
+            pointer-events: auto;
+            transition: transform 0.2s;
+        }
+        .title-btn:hover { transform: scale(1.05); }
+
+        #title1 { left: 30px; }
+        #title2 { right: 30px; }
+
+        /* 타이틀 팝업 스타일 */
+        .title-info-popup {
+            position: fixed;
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #ed7625;
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            line-height: 1.6;
+            display: none; 
+            z-index: 2500;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            text-align: left;
+            word-break: keep-all;
+            width: 320px;
+        }
+        
+        #popup-title1 { top: 150px; left: 30px; }
+        /* [수정 4] 텍스트 정렬 왼쪽으로 변경 */
+        #popup-title2 { top: 150px; right: 30px; text-align: left; }
+
+        /* 중앙 XY3 아이콘 */
+        .header-center-icon {
+            position: relative;
+            width: 60px;
+            height: 60px;
+            pointer-events: auto;
+            animation: blinkEffect 10s infinite ease-in-out;
+            animation-delay: 2s;
+        }
 
         .side-left {
             position: fixed;
             top: 50%; left: 30px;
             transform: translateY(-50%);
             z-index: 2000;
+            animation-delay: 4s;
         }
 
         .side-right {
@@ -58,37 +115,13 @@
             top: 50%; right: 30px;
             transform: translateY(-50%);
             z-index: 2000;
+            animation-delay: 6s;
         }
 
-        /* --- [수정] 헤더 이미지 래퍼 (두 이미지 겹치기) --- */
-        .header-img-wrapper {
-            position: relative;
-            width: 60px;  /* 아이콘 크기 */
-            height: 60px; /* 아이콘 크기 */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        /* 헤더 안의 이미지들은 래퍼 안에 절대 위치로 겹침 */
-        .header-icon {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            object-fit: contain;
-            transition: opacity 0.5s ease; /* 부드러운 전환 */
-            cursor: pointer;
-        }
-
-        /* 활성화/비활성화 클래스 */
-        .header-icon.active { opacity: 1; z-index: 20; pointer-events: auto; }
-        .header-icon.inactive { opacity: 0; z-index: 10; pointer-events: none; }
-
-
-        /* --- XY 호버 텍스트 (툴팁) --- */
+        /* XY 툴팁 */
         .xy-tooltip {
             position: fixed;
-            color: #ed7625;
+            color: #ffffff;
             font-family: 'IBM Plex Sans KR', sans-serif;
             font-weight: 700;
             font-size: 16px;
@@ -97,7 +130,6 @@
             pointer-events: none;
             z-index: 3000;
             white-space: nowrap;
-            text-shadow: 0 0 5px rgba(255,255,255,0.8);
         }
         .xy-tooltip.visible { opacity: 1; }
 
@@ -106,36 +138,16 @@
         #tooltip-xy3 { top: 90px; left: 50%; transform: translateX(-50%); }
         #tooltip-xy4 { bottom: 90px; left: 50%; transform: translateX(-50%); }
 
-        /* --- Title 팝업 스타일 --- */
-        .title-popup {
-            position: fixed;
-            top: 90px;
-            left: 50%;
-            transform: translateX(40px);
-            width: 350px;
-            background-color: rgba(255, 255, 255, 0.95);
-            color: #ed7625;
-            padding: 20px;
-            border-radius: 10px;
-            font-size: 13px;
-            line-height: 1.6;
-            display: none; 
-            z-index: 2500;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            text-align: left;
-            word-break: keep-all;
-        }
-        .title-popup b { font-size: 15px; }
 
-        /* --- 그리드 레이아웃 --- */
+        /* 그리드 레이아웃 */
         #grid-container {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
             gap: 15px;
-            padding: 100px 100px;
+            padding: 140px 100px;
         }
 
-        /* --- 아이템 박스 --- */
+        /* 아이템 박스 */
         .motion-item {
             position: relative;
             width: 100%;
@@ -156,7 +168,7 @@
         }
         .frame-img.active { display: block; }
 
-        /* --- 아이템 팝업 스타일 --- */
+        /* 아이템 팝업 */
         .popup-box {
             position: absolute;
             top: 0;
@@ -201,29 +213,49 @@
             font-size: 14px;
             line-height: 1.5;
             text-align: left;
-            white-space: pre-wrap;
+            white-space: normal; 
+            word-break: keep-all; 
+        }
+
+        /* [수정 3] 랜덤 텍스트 스타일: 곡선 덜 넣기 (border-radius: 6px) */
+        .random-floating-text {
+            position: fixed;
+            background-color: #ffffff;
+            color: #ed7625;
+            padding: 8px 15px;
+            border-radius: 12px; /* [수정 3] 곡선 축소 */
+            font-size: 12px;
+            font-weight: 700;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
 
         @media (max-width: 768px) {
-            #grid-container { grid-template-columns: repeat(2, 1fr); padding: 90px 20px; }
+            #grid-container { grid-template-columns: repeat(2, 1fr); padding: 120px 20px; }
             .side-left, .side-right { display: none; }
-            .title-popup { width: 80%; left: 10%; transform: none; }
+            .title-info-popup { width: 80%; left: 10%; right: auto; top: 100px; transform: none; text-align: left; }
             .popup-box { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80%; margin: 0; }
+            .title-btn { width: 80px; }
         }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="header-img-wrapper">
-            <img src="./xy3.png" id="img-xy3" class="header-icon active" alt="xy3">
-            <img src="./title.png" id="img-title" class="header-icon inactive" alt="title">
+        <img src="./title1.png" id="title1" class="title-btn" alt="Title 1">
+        <div id="popup-title1" class="title-info-popup">
+            &lt;기대도 됩니다!&gt; 프로젝트는 사람들이 생각하는 ‘기대다’는 주로 어떤 감각적 경험에서 발생하는지 형태적으로 수집 및 탐구하기 위해 시작되었습니다. <br> <br> 사람들은 지쳤을 때 또는 힘들 때 기댈 공간이 필요하다고 느꼈고, 그들의 기대다는 공동체적으로 어떤 영향을 주는지 시각적으로 분석해보는 과정을 진행했습니다. <br> <br> 또한 사람마다 생각하는 ‘기대다'의 형태를 공통적인 시각 데이터인 ‘기대다의 언어'로 분류하였습니다.
         </div>
-        
+
+        <img src="./xy3.png" id="img-xy3" class="header-center-icon" alt="xy3">
         <div id="tooltip-xy3" class="xy-tooltip">동적</div>
-        
-        <div id="titlePopup" class="title-popup">
-            <b>기대도 됩니다!</b> 프로젝트는 사람들의 ‘기대다’는 주로 어떤 감각적 경험에서 발생하는가?를 바탕 으로 그들의 ‘기대다’는 어떤 형태인지 수집하고 탐구하기 위해 시작되었다. 그 이유는 사람들은 지쳤을 때 또는 힘들 때 기댈 공간이 필요하다고 느꼈고, 그들의 기대다를 수집하고 또 하나의 공동체 영향을 시각적으로 탐구 및 분석 하고자 하기 때문이다. 그러므로 이 프로젝트는 사람마다 생각하는 ‘기대다'의 형태를 점토를 활용해 공통적인 시각 데이터를 ‘기대다의 언어'로 분류하여 시각화 하는 것이 목표이다. <br><br> 제작 2025.09.-12. <br> 팀원 김기현, 김민서, 김채린, 이예슬
+
+        <img src="./title2.png" id="title2" class="title-btn" alt="Title 2">
+        <div id="popup-title2" class="title-info-popup">
+            기대다의 언어를 분류하고 데이터화하여 '기대다'를 표현한 음악도 함께 제작해보았습니다. <br> <br> 제작 <br> 4조 김기현, 김민서, 김채린, 이예슬
         </div>
     </header>
 
@@ -234,7 +266,7 @@
     <div id="tooltip-xy2" class="xy-tooltip">견고</div>
 
     <footer>
-        <img src="./xy4.png" id="xy4" class="common-icon" alt="Footer">
+        <img src="./xy4.png" id="xy4" class="common-icon" style="animation-delay: 8s;" alt="Footer">
         <div id="tooltip-xy4" class="xy-tooltip">정적</div>
     </footer>
 
@@ -248,6 +280,7 @@
             if (audio.paused) audio.play();
         }, { once: true });
 
+        // 전역 클릭 시 열려있는 팝업 닫기 (배경 클릭 시)
         window.addEventListener('click', (e) => {
             if (!e.target.closest('.motion-item')) {
                 document.querySelectorAll('.popup-box.show').forEach(el => {
@@ -273,26 +306,26 @@
 
         const rawData = [
             {id:1, t1:"편안한 빈백", t2:"이삭", col:"c7e0c8", desc:"힘들 때 의지할 수 있는 것이 필요하다. 편안하고 부드럽고 믿을 수 있고 좋은 것. 힘들면 언제든 기댈 수 있는 편안한, 부들부들, 모난 곳 없는, 둥글둥글 빈백."},
-            {id:2, t1:"자유로운 너와 나", t2:"포근", col:"7292d3", desc:"나를 위해 내게 기대어줘.' 기울어지고 넘어지는 대상. 기댈 수 있게 손을 뻗은 대상. 기댈 수 있게 내어 주는 사람 역시 자유롭고 위로받는... 색상이 밝아지며, 짙은 남색에서 흰색이 되어가는... 깊이 늘어져 있던 마음이 풀어져 자유롭고 깨끗하게 되는 것. '기대다'는 힘든 일이 있을 때 마음을 편안하고 평화롭게 만들어 준다. 난, 기댈 대상이 필요하다."},
+            {id:2, t1:"자유로운 너와 나", t2:"포근", col:"c9dbf8", desc:"나를 위해 내게 기대어줘.' 기울어지고 넘어지는 대상. 기댈 수 있게 손을 뻗은 대상. 기댈 수 있게 내어 주는 사람 역시 자유롭고 위로받는... 색상이 밝아지며, 짙은 남색에서 흰색이 되어가는... 깊이 늘어져 있던 마음이 풀어져 자유롭고 깨끗하게 되는 것. '기대다'는 힘든 일이 있을 때 마음을 편안하고 평화롭게 만들어 준다. 난, 기댈 대상이 필요하다."},
             {id:3, t1:"고요한 평화", t2:"지윤", col:"fffcd9", desc:"혼자 살아갈 수 없으며 어떤 대상에 기댐으로써 부정적 감정을 덜 수 있기 때문에. 친언니는 마음을 편안하게 만들어주고, 피아노 노래 같은 잔잔한 소리는 시끄러웠던 마음을 고요하게 해준다. 나의 평화는 잠시 아무 걱정 없이 마음을 놓아도 괜찮다는 메시지를 담고 싶다."},
             {id:4, t1:"밝은 무제", t2:"김지혁", col:"ffffff", desc:"누군가에게 의지한다는 건 '기댄다'와 같은 의미이다. 나는 보통 휴대폰에 기댄다. 흰색처럼 밝은색에, 정육면체처럼 단정하면서도 부드러운 공간이 편하게 기댈 수 있는 '기대다'의 공간 같다. 기대는 몸으로 느끼는 것이라 글로 표현하기 어려워서 무제로 정의한다."},
             {id:5, t1:"따뜻한 여정", t2:"둥글이", col:"bababa", desc:"인생, 삶은 함께 살아가는 것이기에, 누군가와 서로 기대면서 함께 가는 여정이라는 것을 말하고 싶다. 인생은 고통과 결정의 과정이기 때문에, 인생이란 긴 시간의 여정에 홀로서기는 어렵다. 그래서 기댈 대상은 필요하다. 가족이나 친구처럼 오래 곁에 있었던 사람들에게 기대게 된다. 나는 '기대다'를 떠올리면 함께 살아가는 서로 돕고 돕는 따뜻함이 생각나서 노을빛 같은 따뜻한 노란색이 먼저 떠오른다. 결국 기대는 건, 누군가와 함께 가는 여정이다."},
-            {id:6, t1:"안정적인 그 자리", t2:"선택적 베짱이", col:"c2e9ff", desc:"가끔. 예상 못한 일들이 생길 때, 휴식, 안정감이 필요하다. 음악, 드라이브, 운동에 집중함으로써 힘든 감정을 잊어버려서 훨씬 홀가분하다. 그리고 마음도 정돈되어 다음 일에 더 집중할 수 있어서 좋다. 언제나 그 자리에 있는, 나무와 해변의 무게는 다리를 쭈욱 뻗고 살짝 기대어 앉을 수 있는 공간이 되어준다."},
+            {id:6, t1:"안정적인 그 자리", t2:"선택적 베짱이", col:"ffffff", desc:"가끔. 예상 못한 일들이 생길 때, 휴식, 안정감이 필요하다. 음악, 드라이브, 운동에 집중함으로써 힘든 감정을 잊어버려서 훨씬 홀가분하다. 그리고 마음도 정돈되어 다음 일에 더 집중할 수 있어서 좋다. 언제나 그 자리에 있는, 나무와 해변의 무게는 다리를 쭈욱 뻗고 살짝 기대어 앉을 수 있는 공간이 되어준다."},
             {id:7, t1:"든든한 의지", t2:"이영우", col:"f9e7cd", desc:"자신의 것에 균열이 생겨 더 든든한 사각형에 기대 의지하는 것. 나의 일부분이 무너지거나 균열이 있을 때, 남의 품을 빌려 의지하는 것. 이것이 내가 정의한 '기대다'이다. 하지만 지금의 난, 나 자신이 온전하다고 느끼고 있다."},
             {id:8, t1:"온전한 무해", t2:"나우", col:"ffffff", desc:"내 몸속에 운용할 수 있는 에너지가 0에 수렴하여 꼼짝할 수 없는 상황에서 경계하지 않고 온전히 '쉼'을 이룰 수 있는 상태가 찾아온다. 인간은 온전하지 않은 불완전한 존재이기 때문에 감당할 수 없는 상황 또는 순간을 마주하면 무력해진다. 마치 공기 빠진 풍선같이. 나의 '기대다'는, 정형화되지 않고 어떠한 의미가 담기지 않은 것이어야 과부화된 속을 비워냄과 동시에 기댈 수 있을 것 같기에 '무(無)'의미를 담고 싶다."},
-            {id:9, t1:"적당한 편안", t2:"점토", col:"a59a8b", desc:"기댄다는 건 무게를 떠넘겨서 부담을 줄이는 것. 너무 밝지도 어둡지도 않은 적당한 구석, 신경 쓰이지 않는 냄새와 소리 속에서의 편안. 님도 해봐요. 이거 편함."},
+            {id:9, t1:"적당한 편안", t2:"점토", col:"f0e3d1", desc:"기댄다는 건 무게를 떠넘겨서 부담을 줄이는 것. 너무 밝지도 어둡지도 않은 적당한 구석, 신경 쓰이지 않는 냄새와 소리 속에서의 편안. 님도 해봐요. 이거 편함."},
             {id:10, t1:"폭신한 나", t2:"긍", col:"ffffff", desc:"의지하는 순간은 분명 필요하지만, 너무 의존하게 된다면... 대상이 없을 때 너무 힘들 것 같아 기댈 대상은 없어야 한다고 생각한다. 그래도 힘들 때면 옆에 있는 아무나 붙잡고 하소연하게 된다. 그런 하소연을 들어주는 친구들한테 고맙다. 나는 흰색처럼 생각과 감정이 잠시 비워졌으면 좋겠다는 바람도 있다. 정제된 폭신한 이불이 있는 내 방은 기대기에 충분한 조건이다."},
-            {id:11, t1:"가벼운 몽몽이", t2:"연지천", col:"96a8cd", desc:"소라색에 구름 모양. 솜사탕같이 뭉게 구름 모양. 가볍고... 귀여운 형태인 몽몽이. 어떤 메시지나 거창한 가치라는 걸 부여하지 않고, 그냥 무의식에 나온 몽몽이."},
+            {id:11, t1:"가벼운 몽몽이", t2:"연지천", col:"c9dbf8", desc:"소라색에 구름 모양. 솜사탕같이 뭉게 구름 모양. 가볍고... 귀여운 형태인 몽몽이. 어떤 메시지나 거창한 가치라는 걸 부여하지 않고, 그냥 무의식에 나온 몽몽이."},
             {id:12, t1:"익숙한 뭘까요", t2:"진혜린", col:"ffffff", desc:"'기댐'은 나에게 휴식이자 정말 많이 지쳤을 때 쓰는 최후의 수단이다. 그래도 결국은 내가 다시 일어나야 하는 법이다. 그래서 물건보다는 영화처럼 몰입할 수 있는 활동이 더 도움이 된다. 몰입하다 보면 지친 상태를 좀 더 빨리 벗어나 극복되기 때문이다. 외부는 일상 그대로 흘러가지만, 내가 있는 자리는 은은한 빛이 드는 곳, 고요하고 잔잔한 소음 상태에 익숙한 향이 나는 곳이 내가 기댈 수 있는 공간이다. 내 의지대로 모양을 바꿀 수 있는 정말 뭘까요 싶은 느낌이 기대다 형태이지 않을까."},
             {id:13, t1:"무거운 꼬키리", t2:"꼬키리", col:"ffe9f6", desc:"안전하다고 느끼는 것, 편안하고 애정이 느껴지는 것이 '기대다'의 의미이다. 항상, 언제나 기대야 할 대상이 필요하다고 느낀다. 휴대전화처럼 사람과의 소통이 필요하다. 연한 분홍색처럼 편안하고 애정이 느껴지는 분위기에, 무드등과 약한 담배 냄새가 풍기는, 사람이 떨어질 수 없을 정도의 작은 공간도 떠오르고, 듬직한 크기지만 무겁고, 흐물거리는 남성 형태의 꼬키리 같은 느낌이다."},
-            {id:14, t1:"어두운 잘생긴 남자 상자", t2:"ninano", col:"ff8a8a", desc:"기댈 대상이 필요하다. 대롱대롱 매달리고 싶다. 하지만, 오브제 자체에 온전히 기댄다는 건 할 수 없다. 내가 떠올리는 공간은 깜깜하고, 소리가 거의 안 들리는 곳이고, 잘생긴 남자한테 기댈 수 있는 물리적 형태가 필요하다고 느낀다. 그래서 내가 상상하는 '기댐'의 모습은 '잘생긴 남자 상자 같은 형태에 가까운 것 같다."},
+            {id:14, t1:"어두운 잘생긴 남자 상자", t2:"ninano", col:"ffe9f6", desc:"기댈 대상이 필요하다. 대롱대롱 매달리고 싶다. 하지만, 오브제 자체에 온전히 기댄다는 건 할 수 없다. 내가 떠올리는 공간은 깜깜하고, 소리가 거의 안 들리는 곳이고, 잘생긴 남자한테 기댈 수 있는 물리적 형태가 필요하다고 느낀다. 그래서 내가 상상하는 '기댐'의 모습은 '잘생긴 남자 상자 같은 형태에 가까운 것 같다."},
             {id:15, t1:"고요한 휘청휘청", t2:"비야비야내려라", col:"ccbf89", desc:"'기대다'는 '돌아갈 곳'이라는 의미인 것 같다. 그리고 휘청휘청 살아가면서 힘든 일은 생길 수밖에 없어서 내가 뒤로 휘청하면 상대는 앞으로 휘청이고 그러며 살아가는 것 같다. 나는 아주 가까운 사람들, 침대나 이불, 집 냄새 같은 것들에서 안정감을 얻는다. 노란 조명 아래 고요한 공간, 비누·무화과·우디한 향이 스며 있는 사람이 누울 수 있는 크기의 공간이라면 기댈 수 있을 것 같다."},
-            {id:16, t1:"아늑한 √", t2:"김상희", col:"a08562", desc:"'기댐'이란, 서로 의지하고 지탱하는 것. 삶을 살아갈 때 서로 공유할 수 있는 것들이 너무나 많다. 말이 통하지 않아도 교감할 수 있는 우리 집 고양이처럼 편해서 기대게 되는 존재도 있다. 나무뿌리가 바닥에 딱 붙어 있는 모습처럼 서로 상호작용하는 것, 따뜻한 조명, 요리하는 소리가 섞인 아늑하면서 조금은 비좁은 공간이, '기대다'의 √ 같은 느낌이다."},
+            {id:16, t1:"아늑한 √", t2:"김상희", col:"fff2cc", desc:"'기댐'이란, 서로 의지하고 지탱하는 것. 삶을 살아갈 때 서로 공유할 수 있는 것들이 너무나 많다. 말이 통하지 않아도 교감할 수 있는 우리 집 고양이처럼 편해서 기대게 되는 존재도 있다. 나무뿌리가 바닥에 딱 붙어 있는 모습처럼 서로 상호작용하는 것, 따뜻한 조명, 요리하는 소리가 섞인 아늑하면서 조금은 비좁은 공간이, '기대다'의 √ 같은 느낌이다."},
             {id:17, t1:"부드러운 꿈의 요람", t2:"인천핑크공주", col:"f9f8e4", desc:"아늑하고 익숙한 따뜻한 조명과 섬유유연제 향기, 부드러운 촉감이 어우러진 공간이 내가 기댈 수 있는 공간이다. 흔들리는 풍경소리와 부드러운 패브릭, 그 솜 안에서 기댐을 느낀다. 내가 떠올린 '기대다'의 형태는 꿈의 요람이다."},
             {id:18, t1:"듬직한 튼실이", t2:"기(댐)현", col:"bfd8bf", desc:"할 일이 중구난방이거나 자꾸 헤맬 때 듬직하게 뭐가 있으면 좋겠다고 생각한다. 튼실한 근육쟁이에 매달리고 싶다. 손안에 쏙 들어가는 튼실이는 나의 '기대다' 형태이다."},
             {id:19, t1:"말랑한 베개", t2:"윤지예", col:"fff4b3", desc:"'기대다'란 편안함. 의지, 잠, 휴식이다. 이 가혹한 세상 속에서 혼자 버티고 살아가기엔 너무 험난하다고 생각한다. 무언가에 기댐으로써 사랑을 느끼고 편안해지는 것 같다. 잠시나마 고민이 사라진다. 사랑... 편안함...직선이 없고 곡선만 있는... 포근한... 미니멀하고 조용한... 말랑하고 푹신한... 베개. 무언가에 기대다... 베개에 기대다."},
             {id:20, t1:"든든한 베개 의자", t2:"김영우", col:"fff9ca", desc:"'기대다'는, 나에게 의지할 때 든든함과 편안함을 느끼는 것. 이 세상은 혼자 살아갈 수 없다고 생각하기 때문에 기대는 것은 꼭 필요하다. 물건을 꽉 잡음으로서 편안함을 느끼는데, 꽉 쥐는 행동이 심적으로 기대는 효과가 있는 것 같다. 그리고, 무조건 폭신해야 한다. 베개 모양, 솜 질감, 베개 의자. 심적으로도 물리적으로도 기댈 수 있다."},
-            {id:21, t1:"강한 사람", t2:"황제연, Emperor Yeon", col:"4f4f4f", desc:"기대는 것은 필요하다. 사람 인을 보면 서로 기대는 형상이다. 사람은 혼자 살아갈 수 없다. 반드시 무언가에 기댄다. 그게 무엇이든 처음부터 혼자 서 있는 사람은 없다. 견고해야 하고, 무게감이 있으며, 안 부서지는 강력한 소재로 만들어진 강한 사람이 '기대다' 같다."},
+            {id:21, t1:"강한 사람", t2:"황제연, Emperor Yeon", col:"efefef", desc:"기대는 것은 필요하다. 사람 인을 보면 서로 기대는 형상이다. 사람은 혼자 살아갈 수 없다. 반드시 무언가에 기댄다. 그게 무엇이든 처음부터 혼자 서 있는 사람은 없다. 견고해야 하고, 무게감이 있으며, 안 부서지는 강력한 소재로 만들어진 강한 사람이 '기대다' 같다."},
             {id:22, t1:"평화로운 BEAN", t2:"김지혜", col:"c5e7f9", desc:"나에게 '기대다'란, 안정감이다. 혼자 살아가기에는 너무 힘들 수 있으니, 기댈 대상은 필요하다. 나에게 그것은 사람인데, 항상 내 말을 잘 들어주고 응원해 주기 때문이다. 하늘색과 닮은 파랑은 평화로워지는 느낌이라 파랑으로 말랑하고 둥글고 푹신한 BEAN 이라는 '기대다'의 형태를 만들었다."},
             {id:23, t1:"안전한 토닥", t2:"박제하", col:"f2dde3", desc:"나는 기댈 대상이 필요하다 느낀다. 마음의 여유를 찾을 수 있는 안전한 곳이 하나쯤은 있어야 온전한 '나'를 유지할 수 있는 것 같기 때문이다. 나의 상황을 이해해 주는 사람에게 기대는 것이 안정을 준다. 따뜻하고 부드러운 분홍빛, 익숙한 향기가 가득하고, 포근한 나만의 공간이 떠오른다. 마음을 토닥이는 것 같다."},
             {id:24, t1:"아름다운 작은 방", t2:"비누", col:"ededed", desc:"기대는 것 머리가 띵하게 어지럽고 아름다운 것. 인간의 한계. 우리는 필연적으로 실패할 수밖에 없고, 세상의 모순을 보고, 불행은 일어나는데, 더 나은 것이 있다는 믿음 없이는 나아가기 어렵다. 글쓰기. 성찰 없는 기댐은 감정에 호소하는 어리광에 불과하다. 작은 방, 조명 한개, 편한 의자, 책상이 있다면 기댈 수 있다."},
@@ -302,18 +335,18 @@
             {id:28, t1:"바스락거리는 오후의 햇빛", t2:"Earl C, Gou", col:"fae3fc", desc:"대상을 향한 나의 연약함을 인정하는 것. 본디 사람이 설계되길, 나약하여 서로 기대도록 만들어졌기에, 나는 주로 주변 사람들에게 알게 모르게 기댄다. 때로는 버티고 버티다 나가떨어질 때, 건물에 가로막혀 은은히 들어오는 오후의 햇빛과 그 냄새, 바스락거리는 베개와 부드러운 극세사 이불의 퀸사이즈 침대에 누워있을 때 기대는 느낌을 받는다. 용기 내 기대는 순간의 홍조와 눈시울을 닮은 분홍빛 털이 나름의 마찰력과 포근함을 양득하여 '안미끄럼틀' 형태의 코끼리, 뽀송하지만 묵직한 기대다의 형태를 만든다."},
             {id:29, t1:"부드러운 위로와 휴식", t2:"꿈을 모으는 아이", col:"f9d8bc", desc:"부드러운 촉감의 2~3m 원기둥에 몸을 기대면, 마치 \"잠시 쉬어 가\"라는 말이 전해진다. 주황빛의 은은한 조명 아래, 나무 타는 소리, 따뜻한 코코아 향, 소파와 까끌거리는 거실이 생각난다. '기대다'는 위로와 휴식 그 자체로 존재하는 것처럼 편안하게 다가온다."},
             {id:30, t1:"포근한 달덩이", t2:"하늘을 보고 자라", col:"fffecc", desc:"어두운 하늘 아래 달덩이처럼 둥근 형태, 말랑말랑 부드러운 솜 재질, 기대면 몸을 감싸안듯 밀착되는 포근한 형태가 생각난다. 안쪽은 묵직하지만, 전체는 가벼워서, 마치 보름달이 공기 위에 떠 있는 듯한 느낌이 난다. 별을 볼 수 있는 공간. 하늘을 보면 마음이 편안해지고 기대는 느낌이 든다. 숨통이 트이는 시원하고 선선한 바람. 어두운 배경에 노랗거나 하얀 조명. 바람 소리. 새소리. 시원한 새벽 향기가 은은하게 난다. 어둠 속에서 노란빛이 비치듯 부드럽게 빛나는 공간, 마치 달빛이 내 마음을 감싸는 듯, 편안함과 안정감을 준다."},
-            {id:31, t1:"단단한 용기", t2:"김용기", col:"ad9c8e", desc:"어디든 갈 수 있을 것 같아서 나는 자전거에 기댄다. 그리고 흰 공간, 무소음, 석고향, 흰 조명 속에서 '기댐'을 느낀다. 단단하고 각져있고 극세사 같은 정육면체의 무거움은 수박만 한 크기 안에 용기를 담아 나의 기댐을 잘 표현한다. 단단한 마음은 용기와 닮아있다."},
+            {id:31, t1:"단단한 용기", t2:"김용기", col:"ecd0bd", desc:"어디든 갈 수 있을 것 같아서 나는 자전거에 기댄다. 그리고 흰 공간, 무소음, 석고향, 흰 조명 속에서 '기댐'을 느낀다. 단단하고 각져있고 극세사 같은 정육면체의 무거움은 수박만 한 크기 안에 용기를 담아 나의 기댐을 잘 표현한다. 단단한 마음은 용기와 닮아있다."},
             {id:32, t1:"몽글몽글한 기요미", t2:"김지우", col:"fff7e3", desc:"‘기대다’라는 건 심리적으로 안정감을 느끼는 대상에게 하는 감정이라고 생각한다. 믿음이라는 감정을 동반한 채 편안하고 안정감을 느끼는 감정. 결국 몽글몽글한 기요미 같은 감정 같다. 무겁진 않지만 어느 정도 무게감이 있어서 더 안정되는, 구름 같은 몽글몽글함."},
             {id:33, t1:"둥그런 평온", t2:"익명", col:"feffd9", desc:"친구에게 고민을 털어놓아 생각이 정리될 때처럼, 혹은 침대와 쿠션의 푹신하고 부드러운 촉감이 마음에 평온을 주는 것처럼, 의지할 수 있고 마음의 혼돈을 덜어주는 존재가 필요한 것 같다. 레몬 옐로우와 하늘색 같은 파스텔 톤에 둥그런 곡선과 부드러움을 떠올리면, 평온이 스며드는 느낌이 든다."},
             {id:34, t1:"편안한 양털 쿠션", t2:"이가족", col:"dcffbb", desc:"나에게 ‘기대다’는 힘들고 어려운 상황에서 다시 극복할 수 있게 해주는 용기다. 언제나 느끼진 않지만, 당시 상황에 따라 필요하다고 느끼고, 특히 가족이나 든든한 한 끼처럼 마음을 단단하게 만들어주는 것들이 큰 힘이 된다. 밝으면서 잔잔하고 아늑한 공간에 달콤함 속, 양털 쿠션에 몸을 기대면, 둥글고 부드러운 촉감에 편안함을 느낀다."},
             {id:35, t1:"영원한 기댐의 공간", t2:"김주황이", col:"fff3b6", desc:"포근함과 사랑처럼 마음을 감싸주는 순간이다. 살다 보면 꼭 필요한 때가 찾아오고, 그때 가족이나 평온한 집 같은 존재들이 큰 힘이 되어준다. 황금색처럼 언제나 빛이 날 수 있도록, 볼수록 기분이 좋아지도록, 숲과 바다 같은 초록·파랑이 주는 안정감도 함께 스며들도록 하여 영원한 기댐의 공간을 만들고 싶다. 화사하게, 맑은 자연의 소리와 달콤하면서 짠 바다냄새, 피톤치드 나무 냄새 크기는 다 품을 수 없을 정도의 크기로 평온함과 영원히 깨질 수 없는 사랑을 담고 싶다."},
             {id:36, t1:"은은한 녹색", t2:"청휴", col:"d4e5d3", desc:"고된 하루 끝에 얻을 수 있는 은은한 휴식이다. 그래서 나를 위로해 주는 존재들이 큰 힘이 된다. 은은하고 편안하고 녹색이 주는 안정감을 느낀다. 작은 숲과 정원에 들리는 작은 바람 소리가 들리는 공간에 은은한 숲 향기가 베어든 빈백에 휴식을 취하고 싶다."},
             {id:37, t1:"코튼 캔디", t2:"뽁숭아 동자", col:"fff085", desc:"사람은 누구나 쉼이 필요하다. 그래서 삶의 위로와 휴식을 느낄 수 있는 곳이 자연스럽게 기댐의 대상이 된다. 따뜻한 햇살이 들어오는 창이 있는 방에서 맑은 느낌의 코튼향이 스며들고, 아주 부드러운 극세사 털의 폭신한 소파에 몸을 맡기면 편안해진다. 그래서 내가 떠올리는 기댐의 이미지는 코튼캔디처럼 맑고 달콤한 순간이다."},
-            {id:38, t1:"단단한 방문", t2:"리루", col:"ffb85a", desc:"모든 사람은 살면서 어려움을 느끼기 때문에 누구나 기댈 대상이 필요하다고 생각한다. 친구나 인형처럼 믿고 의지할 수 있는 것들. 나의 모습을 그대로 받아주는 것들에 기대게 된다. 겉에는 부드럽고 속에는 단단한 방문은 내가 생각한 '기대다'의 모습이다."},
+            {id:38, t1:"단단한 방문", t2:"리루", col:"fce5cd", desc:"모든 사람은 살면서 어려움을 느끼기 때문에 누구나 기댈 대상이 필요하다고 생각한다. 친구나 인형처럼 믿고 의지할 수 있는 것들. 나의 모습을 그대로 받아주는 것들에 기대게 된다. 겉에는 부드럽고 속에는 단단한 방문은 내가 생각한 '기대다'의 모습이다."},
             {id:39, t1:"따뜻한 사람 인", t2:"김경진", col:"fcf9d2", desc:"'기대다'는 위안이 되는 것이다. 나는 보통, 의자와 책에 기대는데, 위로가 필요하기 때문이다. '기대다'를 표현하게 되었을 때, 내가 전하고 싶은 메시지는 “혼자가 아님”이다. 노란색처럼 따뜻한 느낌의 사각형이 떠오르고, 서로를 지탱하는 두 사람 人의 형상처럼 면과 면이 맞닿는 것이 '기대다' 를 잘 표현하는 것 같다."},
             {id:40, t1:"폭신한 연결고리", t2:"노다지", col:"ffdcef", desc:"아이 자체가 행복이라 아이에게 기대다는 표현은 어설프지만, 난 아이한테 기댄다. '기대다'는 20도 정도의 온도에, 마음을 확인할 안정감과 믿음이며, 약간 어두운 연한 주황빛 조명의 개인적 공간 속에서 관계에 기대는 것이다. 겉은 솜처럼 푹신하고, 안에는 지지대가 있는 형태처럼, '기댐'은 서로를 붙잡아주는 연결고리 같은 존재인 것 같다."},
             {id:41, t1:"부드러운 위로 쿠션", t2:"안젤리나", col:"fffda6", desc:"위로받고 싶을 때 옆에 있는 사람에게 기댄다. 인간은 사회화 동물이고 서로 의지하면 고통이 줄어든다. 고로 기댈 대상은 필요하다. 부드러운 촉감의 큰 하트 쿠션과 포근한 위로 쿠션이 놓인 긴 소파가 있는 거실은 나만의 ‘기대다’의 공간이 된다. 그곳에서 서로 기대다 보면 사랑은 더욱 깊어진다."},
-            {id:42, t1:"편안한 음과 양", t2:"민타인", col:"adadad", desc:"지지하다, 의존하는 것. 서로 무너지지 않도록 지지해 주면, 삶에 힘이 되는 것 같다. 음과 양, 서로서로 의지하는 느낌. 오래 머물러도 마음이 편안한. 일본 정원 같은 느낌이자 하나의 우주적 차원의 공간. 이것이 나의 '기대다' 이다."},
+            {id:42, t1:"편안한 음과 양", t2:"민타인", col:"e5e5e5", desc:"지지하다, 의존하는 것. 서로 무너지지 않도록 지지해 주면, 삶에 힘이 되는 것 같다. 음과 양, 서로서로 의지하는 느낌. 오래 머물러도 마음이 편안한. 일본 정원 같은 느낌이자 하나의 우주적 차원의 공간. 이것이 나의 '기대다' 이다."},
             {id:43, t1:"포근한 하트", t2:"조우연", col:"ffe1fe", desc:"사랑을 의미하는 하트로 사랑하는 마음을 표현하고 싶다. 따뜻함을 나타내는 노란색, 주황색, 분홍색으로 표현하고 싶다. '포근한 하트'는 딱딱한 느낌보다는 부드러운 질감이 떠오른다. '기대다'는 단어에서 사랑을 의미하는 단어인 하트 모양으로 나타내고 싶었다."},
             {id:44, t1:"보들보들한 뭉치기", t2:"채식주의자", col:"e5e5e5", desc:"살면서 털어낼 공간, 꼭 필요한 존재라고 생각한다. 가사 음악은 '쉼'을 잘 도와주는 것 같다. 내가 좋아하는 낮은 베개처럼 보들보들한 질감의 둥글고 각이 없는 형태들은 검은색과 흰 공간 속에서 기댐을 느낀다. 살아있는 부드러운 털 뭉치. 뭉치기."},
             {id:45, t1:"푹신한 구름 소파", t2:"블루 ㅋㅋ", col:"d6cfe2", desc:"푹신푹신한 구름처럼, 엄마 품에 안긴 느낌과 비슷하다. 혼자 버티기 힘들 때 꼭 필요하고, 그래서 나는 소파에 기대 TV를 보기도 한다. 마음의 휴식을 주는 오브제를 만든다면 밤하늘 같은 보라색·노란색의 아늑하고 안락한 공간에, 부드럽고 구름 모양의 부드러운 질감을 담은 구름 소파를 만들고 싶다."},
@@ -324,14 +357,13 @@
             {id:50, t1:"포근한 온기", t2:"고진희", col:"ffb864", desc:"기대는 순간은 온기를 느끼고 위로받고, 의지를 하고, 존중과 배려받는 것이다. 서로서로의 부족한 면을 채워줄 수 있기에, 기댈 대상은 필요하다. 누구나 느낀 외로움을 포근히 감싸주고 죄책감이나 괴로움을 잊게 만들어 주는 것. 나는 따뜻하고 부드러운 재질의 형태로 '기대다'를 표현하고 싶다."},
             {id:51, t1:"은은한 퐁", t2:"다옹", col:"fffed4", desc:"편안한 상대와 함께 있는 상황, 사람 간 온기를 나누는 과정이 좋다. 온기와 기댐은 노란색, 따뜻하고 포근한 난색이 잘 어울린다. 은은한 조명에 폭신한 의자는 나를 편안하게 해준다. 내가 만든 '기댐'은 언제든 기대고 안길 수 있는 폭신함을 지닌 손 모양의 퐁이다. 털·실크 재질처럼, 부드럽고 귀엽다."},
             {id:52, t1:"조화로운 무제", t2:"소현", col:"efdfb9", desc:"사람들이 많은 공간에서 때로 기가 빨리고, 더 나아가서 생각해도 쉬지 않고 하여 자기 비판적인 사고를 하면 지치기에, 이따금 이를 누를 수 있는 게 필요하여 기댈 대상이 존재한다면 좋을 것 같다. 곡선이 많고 아랫부분에 무게 중심이 강한 형태의 모양. 부드러움도 그렇지만 직선과 곡선이 어우러져 조화롭게 보이는 공간의 모양. 편안과 포근한 것을 연상시키는 파스텔 계열의 난색. 이것들이 조화를 이루면 무제의 기댐이 형상화되지 않을까?"},
-            {id:53, t1:"곡선적인 니케", t2:"서윤", col:"9eaaf2", desc:"'기대다'란, 한쪽 면으로 의지하는 것이다. 사람은 아직.. 고양이 니케가 가족 중에 나를 제일 좋아하기 때문에 고양이 니케에게 기댄다. 직선처럼 보이지만 곡선이 더 들어가는 무언가가 '기대다'의 형태와 닮아있다."},
+            {id:53, t1:"곡선적인 니케", t2:"서윤", col:"#c9daf8", desc:"'기대다'란, 한쪽 면으로 의지하는 것이다. 사람은 아직.. 고양이 니케가 가족 중에 나를 제일 좋아하기 때문에 고양이 니케에게 기댄다. 직선처럼 보이지만 곡선이 더 들어가는 무언가가 '기대다'의 형태와 닮아있다."},
             {id:54, t1:"단단한 무제", t2:"띠니", col:"efefef", desc:"혼자 서 있을 수 없을 때 의지하는 것. 혼자서 모든 걸 감당하기엔 내 자신이 너무 약해서 무조건적으로 사랑을 주는 엄마에게 기대게 된다. 그래서 그 감정을 담아, 단단하면서도 포근한 것이 말랑하고 언제든 자유롭게 변화되는 형태로, 때가 살짝 탄 하얀색처럼 부담스럽지 않은 무제의 '기댐'을 만들고 싶다."},
-            {id:55, t1:"단단한 뿌리 바이러스", t2:"수미니", col:"bb5fce", desc:"온전한 '나'의 형태를 만들어 나가는 과정에서 아직 우리는 너무 무른 형태이다. 기대는 것은 나를 단단하게 만들어 나가기 위해 한 토대를 만들어 주는 중요한 행위이다. 서로 기대는 상황에서 느껴질 수 있는 싶은 관계망으로써 혼자서 살아갈 수 없는 상호작용을 모두 담은 뿌리 및 바이러스 같다."},
+            {id:55, t1:"단단한 뿌리 바이러스", t2:"수미니", col:"fae3fc", desc:"온전한 '나'의 형태를 만들어 나가는 과정에서 아직 우리는 너무 무른 형태이다. 기대는 것은 나를 단단하게 만들어 나가기 위해 한 토대를 만들어 주는 중요한 행위이다. 서로 기대는 상황에서 느껴질 수 있는 싶은 관계망으로써 혼자서 살아갈 수 없는 상호작용을 모두 담은 뿌리 및 바이러스 같다."},
             {id:56, t1:"고요한 포응의자", t2:"윤하긍", col:"fff6ca", desc:"'기댐'은 마음을 나누는 것으로 사람과 함께 살아가는 이 세상 속에서 혼자서는 자기의 힘듦과 감정을 감당하기 버겁기 때문에 필요하다. 그래서 모든 상황은 내가 내 마음대로 통제할 수 없는데 신앙적으로 기대면 모든 것을 맡기고 힘을 뺄 수 있다. 세상의 시선 속에서는 절망과 고통으로 바라볼 수 있는 것들도 신앙적인 시선 속에서는 희망과 감사로 나아갈 수 있다. 그런 감정의 모양을 담는다면, 따뜻한 색감 속에서 조용히 휴식을 취할 수 있는 따뜻하고 고요한 공간에 놓인 부드러운 포옹 의자가 될 것이다."},
-            {id:57, t1:"두터운 보듬이", t2:"파랭", col:"fcd79d", desc:"따뜻하고 복슬복슬한 털, 젤리 같은 탱글 촉촉 따뜻. 모찌 질감 보듬이. 보일러 빵빵하게 켜져 있고, 두껍고 따뜻한 이불과 곳곳에 귤이 한가득 놓여있는 분위기의 공간에 그냥 무의식적으로 기대도 한없이 사랑으로 보듬어 주는 존재."}
+            {id:57, t1:"두터운 보듬이", t2:"파랭", col:"fce5cd", desc:"따뜻하고 복슬복슬한 털, 젤리 같은 탱글 촉촉 따뜻. 모찌 질감 보듬이. 보일러 빵빵하게 켜져 있고, 두껍고 따뜻한 이불과 곳곳에 귤이 한가득 놓여있는 분위기의 공간에 그냥 무의식적으로 기대도 한없이 사랑으로 보듬어 주는 존재."}
         ];
 
-        // 이미지 프레임 개수
         const frameCounts = [
             12, 14, 11, 8, 13, 12, 13, 11, 8, 13, 8, 10, 
             12, 12, 12, 12, 11, 10, 10, 10, 13, 10, 10, 12, 
@@ -345,152 +377,174 @@
             count: frameCounts[i]
         }));
 
-
+        // [수정 1 & 2] StopMotionPlayer 클래스 전면 수정
         class StopMotionPlayer {
-            constructor(container, id, totalFrames) {
-                this.container = container;
+            constructor(element, id, totalFrames) {
+                this.element = element;
                 this.id = id;
                 this.totalFrames = totalFrames;
-                this.frames = container.querySelectorAll('.frame-img');
+                this.frames = element.querySelectorAll('.frame-img');
+                this.popup = element.querySelector('.popup-box');
                 
-                this.popupBox = container.querySelector('.popup-box');
-
                 this.currentIndex = 0;
-                this.isDragging = false;
-                this.isStopping = false;
-                this.isPaused = false;
+                
+                // 상태 변수
+                this.isPressed = false;   // 마우스 버튼이 눌려있는가 (이 요소 위에서)
+                this.isDragging = false;  // 실제 드래그 중인가
+                this.isSpinning = false;  // 관성으로 회전 중인가
+                this.isPaused = false;    // 회전 중 꾹 눌러 일시정지 중인가
+                
+                this.startX = 0;
                 this.lastMouseX = 0;
                 this.velocity = 0;
-                this.frameTimer = 0;
-                this.stopStartTime = 0;
-                this.initialStopVelocity = 0;
-                this.pauseStartTime = 0;
+                this.storedVelocity = 0; // 일시정지 전 속도 저장
+                
                 this.rafId = null;
-                this.lastTime = 0;
+                this.pressStartTime = 0;
+                
+                this.dragThreshold = 5;
+                this.clickThreshold = 200; // 짧은 클릭 판단 기준
 
-                this.initEvents();
-                this.initPopupTrigger();
+                this.init();
             }
             
-            initPopupTrigger() {
-                this.container.addEventListener('dblclick', (e) => {
-                    e.stopPropagation();
-                    document.querySelectorAll('.popup-box.show').forEach(el => {
-                        if (el !== this.popupBox) el.classList.remove('show');
-                    });
-                    this.popupBox.classList.toggle('show');
-                });
-            }
-
-            initEvents() {
-                this.container.addEventListener('mousedown', (e) => {
+            init() {
+                this.element.ondragstart = () => false;
+                
+                // 우클릭 팝업
+                this.element.addEventListener('contextmenu', (e) => {
                     e.preventDefault();
+                    this.togglePopup();
+                });
+
+                // 마우스 다운 (시작)
+                this.element.addEventListener('mousedown', (e) => {
                     if (e.button !== 0) return;
-                    this.lastMouseX = e.clientX;
-
-                    if (this.isStopping) {
-                        this.isPaused = true;
-                        this.pauseStartTime = performance.now();
-                    } else {
-                        this.isDragging = true;
-                        this.isStopping = false;
-                        this.isPaused = false;
-                        this.velocity = 0;
-                        this.startLoop();
-                    }
-                });
-
-                window.addEventListener('mousemove', (e) => {
-                    if (this.isPaused) {
-                        if (Math.abs(e.clientX - this.lastMouseX) > 5) {
-                            this.isPaused = false;
-                            this.isStopping = false;
-                            this.isDragging = true;
-                        } else return;
-                    }
-                    if (!this.isDragging) return;
                     e.preventDefault();
-                    const currentX = e.clientX;
-                    const deltaX = currentX - this.lastMouseX;
-                    this.velocity = (deltaX > 0) ? Math.min(deltaX * 2, 60) : 0;
-                    this.lastMouseX = currentX;
-                });
-
-                window.addEventListener('mouseup', () => {
-                    if (this.isDragging) {
-                        this.isDragging = false;
-                        this.startStoppingSequence();
-                    } else if (this.isPaused) {
+                    
+                    this.isPressed = true;
+                    this.startX = e.clientX;
+                    this.lastMouseX = e.clientX;
+                    this.pressStartTime = Date.now();
+                    
+                    // 이미 회전 중이었다면 -> 일시정지(Pause)
+                    if (this.isSpinning) {
+                        this.isPaused = true;
+                        this.isSpinning = false; // 루프 멈춤
+                        this.storedVelocity = this.velocity; // 속도 저장
+                        this.velocity = 0;
+                        if (this.rafId) cancelAnimationFrame(this.rafId);
+                    } else {
+                        // 정지 상태였다면 초기화
                         this.isPaused = false;
-                        this.stopStartTime += (performance.now() - this.pauseStartTime);
+                        this.storedVelocity = 0;
+                        if (this.rafId) cancelAnimationFrame(this.rafId);
+                        this.velocity = 0;
+                    }
+                });
+
+                // 글로벌 마우스 무브 (드래그 감지)
+                window.addEventListener('mousemove', (e) => {
+                    // 중요: 이 인스턴스가 눌린 상태가 아니면 무시 (다른 인스턴스 침범 방지)
+                    if (!this.isPressed) return;
+                    
+                    const currentX = e.clientX;
+                    const dx = currentX - this.startX;
+
+                    // 일정 거리 이상 움직이면 드래그 모드로 전환
+                    if (!this.isDragging && Math.abs(dx) > this.dragThreshold) {
+                        this.isDragging = true;
+                        this.isPaused = false; // 드래그 시작하면 일시정지 해제
+                        this.isSpinning = false;
+                    }
+                    
+                    if (this.isDragging) {
+                        const delta = currentX - this.lastMouseX;
+                        this.lastMouseX = currentX;
+                        // 속도 0.5배 적용
+                        this.velocity = delta * 0.5; 
+                        this.updateFrame(this.velocity);
+                    }
+                });
+
+                // 글로벌 마우스 업 (종료)
+                window.addEventListener('mouseup', (e) => {
+                    if (!this.isPressed) return; // 내꺼 아니면 무시
+                    this.isPressed = false;
+                    
+                    const duration = Date.now() - this.pressStartTime;
+
+                    if (this.isDragging) {
+                        // 드래그 끝 -> 관성 회전 시작
+                        this.isDragging = false;
+                        this.startInertia();
+                    } else if (this.isPaused) {
+                        // 일시정지(Hold) 끝 -> 회전 재개 (Resume)
+                        this.isPaused = false;
+                        this.velocity = this.storedVelocity;
+                        this.startInertia();
+                    } else {
+                        // 드래그도 아니고 일시정지도 아님 -> 단순 클릭
+                        // 짧은 클릭이면 팝업
+                        if (duration < this.clickThreshold) {
+                            this.togglePopup();
+                        }
                     }
                 });
             }
+            
+            togglePopup() {
+                // 다른 팝업 닫기
+                document.querySelectorAll('.popup-box.show').forEach(el => {
+                    if(el !== this.popup) el.classList.remove('show');
+                });
+                this.popup.classList.toggle('show');
+            }
+            
+            updateFrame(delta) {
+                // delta만큼 프레임 이동 (음수면 뒤로, 양수면 앞으로)
+                // 속도 0.5배는 mousemove에서 이미 적용함. 여기선 누적값 사용.
+                // 그러나 정수 프레임으로 변환해야 함.
+                // 부드러운 처리를 위해 내부적으로 실수형 인덱스를 쓰고 싶지만,
+                // 간단히 누적값이 1 이상일 때 이동하도록 함.
+                
+                // 여기서는 delta를 그대로 더하면 너무 빠를 수 있으니 조금 더 줄임
+                const frameDelta = delta * 0.5; 
+                
+                if (Math.abs(frameDelta) < 0.1) return;
 
-            startLoop() {
-                if (!this.rafId) {
-                    this.lastTime = 0;
-                    this.rafId = requestAnimationFrame(this.animate.bind(this));
+                const direction = frameDelta > 0 ? 1 : -1;
+                const steps = Math.floor(Math.abs(frameDelta));
+                
+                if (steps > 0) {
+                    this.frames[this.currentIndex].classList.remove('active');
+                    // 순환 로직
+                    let nextIndex = (this.currentIndex + (direction * steps)) % this.totalFrames;
+                    if (nextIndex < 0) nextIndex += this.totalFrames;
+                    
+                    this.currentIndex = nextIndex;
+                    this.frames[this.currentIndex].classList.add('active');
                 }
             }
-
-            startStoppingSequence() {
-                this.isStopping = true;
-                this.stopStartTime = performance.now();
-                this.initialStopVelocity = this.velocity > 5 ? this.velocity : 10;
-            }
-
-            animate(timestamp) {
-                if (!this.lastTime) this.lastTime = timestamp;
-                const deltaTime = timestamp - this.lastTime;
-                this.lastTime = timestamp;
-
-                if (this.isPaused) {
-                    this.rafId = requestAnimationFrame(this.animate.bind(this));
-                    return;
-                }
-
-                if (this.isDragging || this.isStopping) {
-                    if (this.isStopping) {
-                        const timeElapsed = timestamp - this.stopStartTime;
-                        if (timeElapsed >= 3000) {
-                            this.resetToDefault();
-                            return;
-                        }
-                        const progress = timeElapsed / 3000;
-                        this.velocity = this.initialStopVelocity * (1 - progress);
+            
+            startInertia() {
+                this.isSpinning = true;
+                
+                const inertiaLoop = () => {
+                    if (!this.isSpinning) return;
+                    
+                    // 마찰력 적용 (서서히 감속)
+                    this.velocity *= 0.98; 
+                    
+                    if (Math.abs(this.velocity) < 0.2) {
+                        this.isSpinning = false;
+                        return;
                     }
-
-                    if (this.velocity > 0.1) {
-                        this.frameTimer += deltaTime * this.velocity * 0.005;
-                        if (this.frameTimer >= 1) {
-                            const framesToAdvance = Math.floor(this.frameTimer);
-                            this.frameTimer -= framesToAdvance;
-                            this.nextFrame(framesToAdvance);
-                        }
-                    }
-                    this.rafId = requestAnimationFrame(this.animate.bind(this));
-                } else {
-                    this.rafId = null;
-                }
-            }
-
-            nextFrame(count) {
-                this.frames[this.currentIndex].classList.remove('active');
-                this.currentIndex = (this.currentIndex + count) % this.totalFrames;
-                this.frames[this.currentIndex].classList.add('active');
-            }
-
-            resetToDefault() {
-                this.isDragging = false;
-                this.isStopping = false;
-                this.isPaused = false;
-                this.velocity = 0;
-                this.lastTime = 0;
-                this.rafId = null;
-                this.frames[this.currentIndex].classList.remove('active');
-                this.currentIndex = 0;
-                this.frames[0].classList.add('active');
+                    
+                    this.updateFrame(this.velocity);
+                    this.rafId = requestAnimationFrame(inertiaLoop);
+                };
+                requestAnimationFrame(inertiaLoop);
             }
         }
 
@@ -509,7 +563,6 @@
             items.forEach(item => {
                 const wrapper = document.createElement('div');
                 wrapper.className = 'motion-item';
-                wrapper.setAttribute('ondragstart', 'return false'); 
                 
                 const bgStyle = `background-color: ${hexToRgba(item.col, 0.9)};`;
 
@@ -520,9 +573,7 @@
                                 <span>${item.t1}</span>
                                 <span>${item.t2}</span>
                             </div>
-                            <div class="text-desc">
-                                ${item.desc}
-                            </div>
+                            <div class="text-desc">${item.desc}</div>
                         </div>
                     </div>
                 `;
@@ -559,6 +610,7 @@
         function setupTooltip(imgId, tooltipId) {
             const img = document.getElementById(imgId);
             const tip = document.getElementById(tooltipId);
+            if(!img || !tip) return;
             let timer = null;
 
             img.addEventListener('mouseenter', () => {
@@ -568,44 +620,66 @@
                     tip.classList.remove('visible');
                 }, 3000);
             });
-            img.addEventListener('mouseleave', () => {
-            });
         }
         setupTooltip('xy1', 'tooltip-xy1');
         setupTooltip('xy2', 'tooltip-xy2');
         setupTooltip('img-xy3', 'tooltip-xy3'); 
         setupTooltip('xy4', 'tooltip-xy4');
 
-        const headerImg = document.getElementById('headerImg');
-        const imgXy3 = document.getElementById('img-xy3');
-        const imgTitle = document.getElementById('img-title');
-        const titlePopup = document.getElementById('titlePopup');
-        let isTitle = false;
+        const title1 = document.getElementById('title1');
+        const popup1 = document.getElementById('popup-title1');
+        const title2 = document.getElementById('title2');
+        const popup2 = document.getElementById('popup-title2');
 
+        function setupTitlePopup(btn, popup) {
+            btn.addEventListener('mouseenter', () => popup.style.display = 'block');
+            btn.addEventListener('mouseleave', () => popup.style.display = 'none');
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                popup.style.display = (popup.style.display === 'block') ? 'none' : 'block';
+            });
+            popup.addEventListener('mouseenter', () => popup.style.display = 'block');
+            popup.addEventListener('mouseleave', () => popup.style.display = 'none');
+        }
+
+        setupTitlePopup(title1, popup1);
+        setupTitlePopup(title2, popup2);
+
+        // [수정 3] 랜덤 텍스트: 7초 간격
+        const randomTexts = [
+            "점토를 드래그해서 회전시켜 보세요!",
+            "점토를 클릭해보세요!",
+            "음악에 집중해보세요!",
+            "우리는 영원히 지속됩니다… 그러므로 기대도 됩니다!",
+            "타이틀을 클릭해보세요!"
+        ];
+        
+        let textIndex = 0;
+        // [수정 3] 7000ms = 7초
         setInterval(() => {
-            isTitle = !isTitle;
-            if (isTitle) {
-                imgXy3.classList.remove('active');
-                imgXy3.classList.add('inactive');
-                imgTitle.classList.remove('inactive');
-                imgTitle.classList.add('active');
-            } else {
-                imgTitle.classList.remove('active');
-                imgTitle.classList.add('inactive');
-                imgXy3.classList.remove('inactive');
-                imgXy3.classList.add('active');
-                titlePopup.style.display = 'none';
-            }
-        }, 5000);
+            const text = randomTexts[textIndex];
+            textIndex = (textIndex + 1) % randomTexts.length;
 
-        imgTitle.addEventListener('mouseenter', () => {
-            if (isTitle) titlePopup.style.display = 'block';
-        });
-        imgTitle.addEventListener('mouseleave', () => {
-            titlePopup.style.display = 'none';
-        });
-        titlePopup.addEventListener('mouseenter', () => titlePopup.style.display = 'block');
-        titlePopup.addEventListener('mouseleave', () => titlePopup.style.display = 'none');
+            const el = document.createElement('div');
+            el.className = 'random-floating-text';
+            el.innerText = text;
+
+            const x = Math.random() * (window.innerWidth - 200) + 50;
+            const y = Math.random() * (window.innerHeight - 100) + 50;
+            
+            el.style.left = `${x}px`;
+            el.style.top = `${y}px`;
+            
+            document.body.appendChild(el);
+
+            requestAnimationFrame(() => { el.style.opacity = 1; });
+
+            setTimeout(() => {
+                el.style.opacity = 0;
+                setTimeout(() => { el.remove(); }, 1000);
+            }, 3000);
+
+        }, 7000); 
 
     </script>
 </body>
